@@ -1,9 +1,11 @@
-import pandas
+import time
+
+import pandas as pd
 import numpy as np
 from pandas import DataFrame
 
 
-def get_feature(data):
+def test_feature(data):
     a = data.groupby(['label']).size().reset_index()
     print(a)
     b = data[data.duplicated()].count()
@@ -31,6 +33,36 @@ def get_feature(data):
     d = data.describe()
     return data
 
+
+def get_feature(data):
+    feature = pd.DataFrame(data, columns =["prefix","title","tag"])
+    prefixs = data['prefix'].value_counts()
+
+    print("########## tag 点击率 ###########")
+    tag_hits ={}
+    tags = data['tag'].value_counts()
+    for index, tag in zip(tags.index, tags):
+        a = data[data['label'].isin(["1"]) & data['tag'].isin([index])].values
+        tag_hits[index] = a.shape[0]/tag
+        print(index, a.shape[0]/tag)
+    feature["tag"] = feature['tag'].replace(tag_hits)
+
+    print("########## prefix 点击率 ###########")
+    prefix_hits = {}
+    prefixs = data['prefix'].value_counts()
+    for index, prefix in zip(prefixs.index, prefixs):
+        a = data[data['label'].isin(["1"]) & data['title'].isin([index])].values
+        prefix_hits[index] = a.shape[0]/prefix
+    feature["prefix"] = feature['prefix'].replace(prefix_hits)
+
+    print("########## title 点击率 ###########")
+    title_hits = {}
+    titles = data['title'].value_counts()
+    for index, title in zip(titles.index, titles):
+        a = data[data['label'].isin(["1"]) & data['title'].isin([index])].values
+        title_hits[index] = a.shape[0] / title
+    feature["title"] = feature['title'].replace(title_hits)
+    print()
 
 if __name__ == '__main__':
     train = "C:\\tmp\自动驾驶\\oppo_round\\oppo_round1_train_20180929\\oppo_round1_train_20180929.txt"

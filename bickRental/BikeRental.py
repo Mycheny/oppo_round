@@ -48,7 +48,7 @@ if __name__ == '__main__':
     result = pd.DataFrame()
     label = pd.DataFrame()
 
-    dataset = pd.read_csv('../data/train.csv', delimiter=",", skiprows=0)
+    dataset = pd.read_csv('./data/train.csv', delimiter=",", skiprows=0)
 
     trainData = get_feature(dataset)
     label['count'] = dataset['count'].apply(func=mylog).values
@@ -66,7 +66,7 @@ if __name__ == '__main__':
     # pyplot.show()
 
     # 测试数据
-    dataset = pd.read_csv('../data/test.csv', delimiter=",", skiprows=0)
+    dataset = pd.read_csv('./data/test.csv', delimiter=",", skiprows=0)
 
     testData = get_feature(dataset)
     xgtest = xgb.DMatrix(testData)
@@ -77,11 +77,11 @@ if __name__ == '__main__':
     result['datetime'] = dataset['datetime']
     result['count'] = preds
 
-    result.to_csv('../data/result.csv', index=False)  # 预测结果保存为 result.csv 文件
+    result.to_csv('./data/result.csv', index=False)  # 预测结果保存为 result.csv 文件
 
     plt.figure()
     plt.plot(result['datetime'][24 * 18:24 * 22], result['count'][24 * 18:24 * 22])
     plt.xlabel("time(s)")
     plt.ylabel("count(m)")
-    plt.savefig("../data/easyplot.jpg")
+    plt.savefig("./data/easyplot.jpg")
     plt.show()  # 显示图
